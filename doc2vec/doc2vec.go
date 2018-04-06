@@ -4,10 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/lokicui/doc2vec-golang/common"
-	"github.com/lokicui/doc2vec-golang/corpus"
-	"github.com/lokicui/doc2vec-golang/neuralnet"
-	"github.com/tinylib/msgp/msgp"
+
 	"log"
 	"math"
 	"os"
@@ -15,6 +12,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gcla/doc2vec-golang/common"
+	"github.com/gcla/doc2vec-golang/corpus"
+	"github.com/gcla/doc2vec-golang/neuralnet"
+	"github.com/tinylib/msgp/msgp"
 )
 
 var _ = sort.Sort
@@ -101,14 +103,14 @@ func NewDoc2Vec(useCbow, useHS, useNEG bool, windowSize, dim, iters int) IDoc2Ve
 		NN:         neuralnet.NewNN(0, 0, 0, false, false),
 		StartAlpha: common.If(useCbow, 0.05, 0.025).(float64),
 		Iters:      iters,
-        Pool:       nil,
+		Pool:       nil,
 	}
-    self.Pool = &sync.Pool{
-        New: func() interface{} {
-            vector := make(neuralnet.TVector, self.Dim, self.Dim)
-            return &vector
-        },
-    }
+	self.Pool = &sync.Pool{
+		New: func() interface{} {
+			vector := make(neuralnet.TVector, self.Dim, self.Dim)
+			return &vector
+		},
+	}
 	return IDoc2Vec(self)
 }
 
@@ -193,36 +195,36 @@ func (p *TDoc2VecImpl) GetLikelihood4Doc(context string) (likelihood float64) {
 func (p *TDoc2VecImpl) DocSimCal(content1 string, content2 string) (sim float64) {
 	wordsidx1 := p.Corpus.Transform(content1)
 	wordsidx2 := p.Corpus.Transform(content2)
-    uniq_words_to_offset := map[int32]int{}
-    for _, idx := range wordsidx1 {
-        if _, ok := uniq_words_to_offset[idx]; !ok {
-            uniq_words_to_offset[idx] = len(uniq_words_to_offset)
-        }
-    }
-    for _, idx := range wordsidx2 {
-        if _, ok := uniq_words_to_offset[idx]; !ok {
-            uniq_words_to_offset[idx] = len(uniq_words_to_offset)
-        }
-    }
-    bow_v1 := make(neuralnet.TVector, len(uniq_words_to_offset), len(uniq_words_to_offset))
-    bow_v2 := make(neuralnet.TVector, len(uniq_words_to_offset), len(uniq_words_to_offset))
-    for _, idx1 := range wordsidx1 {
-        vec1 := p.NN.GetSyn0(idx1)
-        offset1 := uniq_words_to_offset[idx1]
-        for _, idx2 := range wordsidx2 {
-            offset2 := uniq_words_to_offset[idx2]
-            vec2 := p.NN.GetSyn0(idx2)
-            sim := float32(cosineSimilarity(*vec1, *vec2))
-            if bow_v1[offset1] < sim {
-                bow_v1[offset1] = sim
-            }
-            if bow_v2[offset2] < sim {
-                bow_v2[offset2] = sim
-            }
-        }
-    }
-    sim = cosineSimilarity(bow_v1, bow_v2)
-    return
+	uniq_words_to_offset := map[int32]int{}
+	for _, idx := range wordsidx1 {
+		if _, ok := uniq_words_to_offset[idx]; !ok {
+			uniq_words_to_offset[idx] = len(uniq_words_to_offset)
+		}
+	}
+	for _, idx := range wordsidx2 {
+		if _, ok := uniq_words_to_offset[idx]; !ok {
+			uniq_words_to_offset[idx] = len(uniq_words_to_offset)
+		}
+	}
+	bow_v1 := make(neuralnet.TVector, len(uniq_words_to_offset), len(uniq_words_to_offset))
+	bow_v2 := make(neuralnet.TVector, len(uniq_words_to_offset), len(uniq_words_to_offset))
+	for _, idx1 := range wordsidx1 {
+		vec1 := p.NN.GetSyn0(idx1)
+		offset1 := uniq_words_to_offset[idx1]
+		for _, idx2 := range wordsidx2 {
+			offset2 := uniq_words_to_offset[idx2]
+			vec2 := p.NN.GetSyn0(idx2)
+			sim := float32(cosineSimilarity(*vec1, *vec2))
+			if bow_v1[offset1] < sim {
+				bow_v1[offset1] = sim
+			}
+			if bow_v2[offset2] < sim {
+				bow_v2[offset2] = sim
+			}
+		}
+	}
+	sim = cosineSimilarity(bow_v1, bow_v2)
+	return
 }
 
 //online fit doc vector
@@ -523,27 +525,27 @@ func (p *TDoc2VecImpl) trainSkipGram4Document(wordsidx []int32, dsyn0 *neuralnet
 //infer=true的时候不对模型参数进行更新
 
 func (p *TDoc2VecImpl) trainCbow4Document(wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
-    //neu1 := make(neuralnet.TVector, p.Dim, p.Dim)     //X(w)
-    //neu1e := make(neuralnet.TVector, p.Dim, p.Dim)    //e
-    //syn1copy := make(neuralnet.TVector, p.Dim, p.Dim) //为了计算 g*Theta
-    //neu1copy := make(neuralnet.TVector, p.Dim, p.Dim) //为了计算 g*X(w)
+	//neu1 := make(neuralnet.TVector, p.Dim, p.Dim)     //X(w)
+	//neu1e := make(neuralnet.TVector, p.Dim, p.Dim)    //e
+	//syn1copy := make(neuralnet.TVector, p.Dim, p.Dim) //为了计算 g*Theta
+	//neu1copy := make(neuralnet.TVector, p.Dim, p.Dim) //为了计算 g*X(w)
 
-    // 使用内存池来降低GC的压力
-    neu1 := *(p.Pool.Get().(*neuralnet.TVector))
-    neu1e := *(p.Pool.Get().(*neuralnet.TVector))
-    syn1copy := *(p.Pool.Get().(*neuralnet.TVector))
-    neu1copy := *(p.Pool.Get().(*neuralnet.TVector))
+	// 使用内存池来降低GC的压力
+	neu1 := *(p.Pool.Get().(*neuralnet.TVector))
+	neu1e := *(p.Pool.Get().(*neuralnet.TVector))
+	syn1copy := *(p.Pool.Get().(*neuralnet.TVector))
+	neu1copy := *(p.Pool.Get().(*neuralnet.TVector))
 
-    defer func(){ p.Pool.Put(&neu1) }()
-    defer func(){ p.Pool.Put(&neu1e) }()
-    defer func(){ p.Pool.Put(&syn1copy) }()
-    defer func(){ p.Pool.Put(&neu1copy) }()
+	defer func() { p.Pool.Put(&neu1) }()
+	defer func() { p.Pool.Put(&neu1e) }()
+	defer func() { p.Pool.Put(&syn1copy) }()
+	defer func() { p.Pool.Put(&neu1copy) }()
 
 	for spos, widx := range wordsidx {
-        neu1.Reset()
-        neu1e.Reset()
-        syn1copy.Reset()
-        neu1copy.Reset()
+		neu1.Reset()
+		neu1e.Reset()
+		syn1copy.Reset()
+		neu1copy.Reset()
 		b := p.getRandomWindowSize()
 		if infer {
 			b = 0
@@ -671,7 +673,7 @@ func (p *TDoc2VecImpl) trainSkipGram() {
 		wg := new(sync.WaitGroup)
 		for docidx_, wordsidx_ := range p.Corpus.GetAllDocWordsIdx() {
 			docidx, wordsidx := docidx_, wordsidx_
-            tokens <- struct{}{}
+			tokens <- struct{}{}
 			wg.Add(1)
 			go func() {
 				defer func() { <-tokens }()
@@ -706,7 +708,7 @@ func (p *TDoc2VecImpl) trainCbow() {
 		wg := new(sync.WaitGroup)
 		for docidx_, wordsidx_ := range p.Corpus.GetAllDocWordsIdx() {
 			docidx, wordsidx := docidx_, wordsidx_
-            tokens <- struct{}{}
+			tokens <- struct{}{}
 			wg.Add(1)
 			go func() {
 				defer func() { <-tokens }()

@@ -11,9 +11,10 @@ func init() {
 
 func (p TVector) Reset() {
 	for i := 0; i < len(p); i++ {
-        p[i] = 0
-    }
+		p[i] = 0
+	}
 }
+
 //向量加法
 func (p TVector) Add(a TVector) {
 	if len(p) != len(a) {
@@ -52,9 +53,9 @@ func (p *TNeuralNetImpl) GetSyn0(i int32) *TVector {
 	return &p.Syn0[int(i)]
 }
 func (p *TNeuralNetImpl) GetDSyn0(i int32) *TVector {
-    if int(i) > len(p.Dsyn0) {
-        log.Fatal("i out of range", i, len(p.Dsyn0))
-    }
+	if int(i) > len(p.Dsyn0) {
+		log.Fatal("i out of range", i, len(p.Dsyn0))
+	}
 	return &p.Dsyn0[int(i)]
 }
 func (p *TNeuralNetImpl) NewDSyn0() *TVector {

@@ -370,12 +370,12 @@ func (p *TCorpusImpl) Build(fname string) (err error) {
 	return p.loadDocument(fname)
 }
 
-func NewCorpus() ICorpus {
+func NewCorpus() *TCorpusImpl {
 	self := &TCorpusImpl{
 		Word2Idx:  make(map[string]int32),
 		Doc2Idx:   make(map[string]int32),
 		MinReduce: 1,
 		MinCnt:    1,
 	}
-	return ICorpus(self)
+	return self
 }

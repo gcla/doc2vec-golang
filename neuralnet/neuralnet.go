@@ -80,7 +80,7 @@ func (p *TNeuralNetImpl) getRandomVector(dim int) (vector TVector) {
 	return vector
 }
 
-func NewNN(docSize, wordSize, dim int, useHS, useNEG bool) INeuralNet {
+func NewNN(docSize, wordSize, dim int, useHS, useNEG bool) *TNeuralNetImpl {
 	self := &TNeuralNetImpl{}
 	syn0 := make([]TVector, 0, wordSize)
 	for i := 0; i < wordSize; i++ {
@@ -110,5 +110,5 @@ func NewNN(docSize, wordSize, dim int, useHS, useNEG bool) INeuralNet {
 		}
 		self.Syn1neg = syn1neg
 	}
-	return INeuralNet(self)
+	return self
 }

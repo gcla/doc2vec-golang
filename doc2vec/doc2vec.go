@@ -91,7 +91,7 @@ func (p TSortItemSlice) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
-func NewDoc2Vec(useCbow, useHS, useNEG bool, windowSize, dim, iters int) IDoc2Vec {
+func NewDoc2Vec(useCbow, useHS, useNEG bool, windowSize, dim, iters int) *TDoc2VecImpl {
 	self := &TDoc2VecImpl{
 		UseCbow:    useCbow,
 		UseHS:      useHS,
@@ -111,7 +111,7 @@ func NewDoc2Vec(useCbow, useHS, useNEG bool, windowSize, dim, iters int) IDoc2Ve
 			return &vector
 		},
 	}
-	return IDoc2Vec(self)
+	return self
 }
 
 func (p *TDoc2VecImpl) GetCorpus() corpus.ICorpus {

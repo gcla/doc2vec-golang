@@ -5,6 +5,7 @@ import (
 )
 
 //全角->半角
+// Translation: "full width to half width"
 func SBC2DBC(s string) string {
 	r := make([]string, 0, len(s))
 	for _, i := range s {
@@ -20,6 +21,7 @@ func SBC2DBC(s string) string {
 }
 
 //半角->全角
+// Translation: "half width to full width"
 func DBC2SBC(s string) string {
 	r := make([]string, 0, len(s))
 	for _, i := range s {

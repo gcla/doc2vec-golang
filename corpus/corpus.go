@@ -28,6 +28,7 @@ func (p *TCorpusImpl) GetWordsCnt() int {
 	return p.WordsCnt
 }
 
+// gcla: Create Huffman tree for hierarchical softmax
 func (p *TCorpusImpl) createBinaryTree() {
 	vocab_size := p.GetVocabCnt()
 	size := vocab_size*2 + 1
@@ -82,8 +83,10 @@ func (p *TCorpusImpl) createBinaryTree() {
 		for p := int32(i); p != root; p = parent[p] {
 			if p >= int32(vocab_size) {
 				point = append(point, p-int32(vocab_size)) //转换为syn1的下标
+				// Translate: "convert to syn1 subscript"
 			} else {
 				//NOTE 叶子节点、HS训练的时候不需要, HS的Point只需要[root, leaf)
+				// Translate: "leaf node, HS not needed for training HS of point only need to [root, leaf]"
 				//point = append(point, p)
 			}
 			code = append(code, binary[p])
@@ -310,7 +313,7 @@ func (p *TCorpusImpl) buildVocabulary(fname string) (err error) {
 }
 
 func (p *TCorpusImpl) sortVocab() {
-	//先排序
+	//先排序 Translate: "Sort first"
 	// Words occuring less than min_count times will be discarded from the vocab
 	p.Word2Idx = map[string]int32{}
 	sort.Sort(sort.Reverse(p.Words))

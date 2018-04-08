@@ -15,9 +15,9 @@ type TWordItemSlice []TWordItem
 
 type ICorpus interface {
 	Build(fname string) (err error)
-	GetVocabCnt() int //排重后的词库大小
+	GetVocabCnt() int //排重后的词库大小 Translate: "Word size after weight"
 	GetDocCnt() int   //doc个数, 按docid排重
-	GetWordsCnt() int //排重前的词数
+	GetWordsCnt() int //排重前的词数 Translate: "The number of words before the weight"
 	GetWordIdx(word string) (idx int32, ok bool)
 	GetWordItemByIdx(i int) (item *TWordItem)
 	GetAllWords() (words TWordItemSlice)
@@ -40,5 +40,5 @@ type TCorpusImpl struct {
 	Doc2Idx      map[string]int32 //docid -> Doc2WordsIdx中的下表
 	MinReduce    int32
 	MinCnt       int32
-	WordsCnt     int //未排重的词数
+	WordsCnt     int //未排重的词数 Translate: "Unranked words"
 }

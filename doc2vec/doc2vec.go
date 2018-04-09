@@ -152,6 +152,7 @@ func (p *TDoc2VecImpl) GetLikelihood4Doc(context string) (likelihood float64) {
 	wordsidx := p.Corpus.Transform(context)
 	for spos, widx := range wordsidx {
 		//针对计算doc中每个词的likelihood
+		// Translate: "For calculations doc each word in likelihood"
 		start := common.Max(0, spos-p.WindowSize)
 		end := common.Min(len(wordsidx), spos+p.WindowSize+1)
 		//in -> hidden      X(widx) = E[V(a)]
@@ -174,6 +175,7 @@ func (p *TDoc2VecImpl) GetLikelihood4Doc(context string) (likelihood float64) {
 			//cw++
 			//Note: @todo
 			//这里可以考虑是否先生成doc的向量,然后讲doc的向量也加到neu1里面
+			// Translate: "Here you can consider whether doc vector, then speak doc, the vector also adds to neu1 inside"
 			//##################################################################
 
 			neu1.Divide(float32(cw))
@@ -502,6 +504,7 @@ func (p *TDoc2VecImpl) trainSkipGram4Pair(centralwidx int32, rangevec *neuralnet
 func (p *TDoc2VecImpl) trainSkipGram4Document(wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
 	for spos, widx := range wordsidx {
 		//随机窗口大小
+		// Translate "random window size" ;-)
 		b := p.getRandomWindowSize()
 		if infer {
 			b = 0
@@ -522,6 +525,7 @@ func (p *TDoc2VecImpl) trainSkipGram4Document(wordsidx []int32, dsyn0 *neuralnet
 }
 
 //dsyn0 由参数传入是为了方便在infer_doc的时候直接传入一个dvector来进行训练
+// Translate: "dsyn0 passed by parameters is for convenience infer_doc when passed in directly dvector to train"
 //infer=true的时候不对模型参数进行更新
 
 func (p *TDoc2VecImpl) trainCbow4Document(wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
@@ -531,6 +535,7 @@ func (p *TDoc2VecImpl) trainCbow4Document(wordsidx []int32, dsyn0 *neuralnet.TVe
 	//neu1copy := make(neuralnet.TVector, p.Dim, p.Dim) //为了计算 g*X(w)
 
 	// 使用内存池来降低GC的压力
+	// Translate: "Use a memory pool to lower"
 	neu1 := *(p.Pool.Get().(*neuralnet.TVector))
 	neu1e := *(p.Pool.Get().(*neuralnet.TVector))
 	syn1copy := *(p.Pool.Get().(*neuralnet.TVector))
@@ -761,8 +766,12 @@ func (p *TDoc2VecImpl) findKNNWordsByVector(vector *neuralnet.TVector) {
 		dis_vector[i] = &SortItem{Idx: int32(i), Dis: dis}
 	}
 	//大爷的 go的排序太麻烦,还不如自己写个快排
+	// Translate: "uncle go sorting too much trouble"
 	//就不能学学好,跟python一样 sort(dis_vector, key=lambda item: item.key, reverse=True)
+	// Translate: "can't learn to learn, python same sort(...)"
 	//都已经有接口了, 待排序的元素实现一个包含GetSortKey函数的接口, 就ok了,能省不少代码
+	// Translate: "there are already interfaces, the elements to be sorted implement an inclusion  GetSortKey function interface"
+	// Translate: "... can save a lot of code"
 	QuickSort(0, len(dis_vector)-1, dis_vector)
 
 	//不用自己写的快排启用这一行也ok, golang 排序需要实现sort.Interface接口

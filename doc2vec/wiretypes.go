@@ -3,6 +3,7 @@ package doc2vec
 import (
 	"sync"
 
+	"github.com/gcla/doc2vec-golang/common"
 	"github.com/gcla/doc2vec-golang/corpus"
 	"github.com/gcla/doc2vec-golang/neuralnet"
 )
@@ -17,7 +18,7 @@ type SortItem struct {
 type TSortItemSlice []*SortItem
 
 type IDoc2Vec interface {
-	Train(fname string)
+	Train(model common.IModelDataProvider)
 	GetCorpus() corpus.ICorpus
 	GetNeuralNet() neuralnet.INeuralNet
 	SaveModel(fname string) (err error)
@@ -34,7 +35,6 @@ type IDoc2Vec interface {
 }
 
 type TDoc2VecImpl struct {
-	Trainfile    string
 	Dim          int
 	UseCbow      bool //true:Continuous Bag-of-Word Model false:skip-gram
 	WindowSize   int  //cbow model的窗口大小
@@ -46,5 +46,5 @@ type TDoc2VecImpl struct {
 	TrainedWords int
 	Corpus       corpus.ICorpus
 	NN           neuralnet.INeuralNet
-	Pool         *sync.Pool
+	pool         *sync.Pool
 }

@@ -12,117 +12,117 @@ import (
 func (z *TCorpusImpl) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zcua uint32
-	zcua, err = dc.ReadMapHeader()
+	var zb0001 uint32
+	zb0001, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zcua > 0 {
-		zcua--
+	for zb0001 > 0 {
+		zb0001--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
 		case "Words":
-			var zxhx uint32
-			zxhx, err = dc.ReadArrayHeader()
+			var zb0002 uint32
+			zb0002, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Words) >= int(zxhx) {
-				z.Words = (z.Words)[:zxhx]
+			if cap(z.Words) >= int(zb0002) {
+				z.Words = (z.Words)[:zb0002]
 			} else {
-				z.Words = make(TWordItemSlice, zxhx)
+				z.Words = make(TWordItemSlice, zb0002)
 			}
-			for zxvk := range z.Words {
-				err = z.Words[zxvk].DecodeMsg(dc)
+			for za0001 := range z.Words {
+				err = z.Words[za0001].DecodeMsg(dc)
 				if err != nil {
 					return
 				}
 			}
 		case "Word2Idx":
-			var zlqf uint32
-			zlqf, err = dc.ReadMapHeader()
+			var zb0003 uint32
+			zb0003, err = dc.ReadMapHeader()
 			if err != nil {
 				return
 			}
-			if z.Word2Idx == nil && zlqf > 0 {
-				z.Word2Idx = make(map[string]int32, zlqf)
+			if z.Word2Idx == nil && zb0003 > 0 {
+				z.Word2Idx = make(map[string]int32, zb0003)
 			} else if len(z.Word2Idx) > 0 {
 				for key, _ := range z.Word2Idx {
 					delete(z.Word2Idx, key)
 				}
 			}
-			for zlqf > 0 {
-				zlqf--
-				var zbzg string
-				var zbai int32
-				zbzg, err = dc.ReadString()
+			for zb0003 > 0 {
+				zb0003--
+				var za0002 string
+				var za0003 int32
+				za0002, err = dc.ReadString()
 				if err != nil {
 					return
 				}
-				zbai, err = dc.ReadInt32()
+				za0003, err = dc.ReadInt32()
 				if err != nil {
 					return
 				}
-				z.Word2Idx[zbzg] = zbai
+				z.Word2Idx[za0002] = za0003
 			}
 		case "Doc2WordsIdx":
-			var zdaf uint32
-			zdaf, err = dc.ReadArrayHeader()
+			var zb0004 uint32
+			zb0004, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Doc2WordsIdx) >= int(zdaf) {
-				z.Doc2WordsIdx = (z.Doc2WordsIdx)[:zdaf]
+			if cap(z.Doc2WordsIdx) >= int(zb0004) {
+				z.Doc2WordsIdx = (z.Doc2WordsIdx)[:zb0004]
 			} else {
-				z.Doc2WordsIdx = make([][]int32, zdaf)
+				z.Doc2WordsIdx = make([][]int32, zb0004)
 			}
-			for zcmr := range z.Doc2WordsIdx {
-				var zpks uint32
-				zpks, err = dc.ReadArrayHeader()
+			for za0004 := range z.Doc2WordsIdx {
+				var zb0005 uint32
+				zb0005, err = dc.ReadArrayHeader()
 				if err != nil {
 					return
 				}
-				if cap(z.Doc2WordsIdx[zcmr]) >= int(zpks) {
-					z.Doc2WordsIdx[zcmr] = (z.Doc2WordsIdx[zcmr])[:zpks]
+				if cap(z.Doc2WordsIdx[za0004]) >= int(zb0005) {
+					z.Doc2WordsIdx[za0004] = (z.Doc2WordsIdx[za0004])[:zb0005]
 				} else {
-					z.Doc2WordsIdx[zcmr] = make([]int32, zpks)
+					z.Doc2WordsIdx[za0004] = make([]int32, zb0005)
 				}
-				for zajw := range z.Doc2WordsIdx[zcmr] {
-					z.Doc2WordsIdx[zcmr][zajw], err = dc.ReadInt32()
+				for za0005 := range z.Doc2WordsIdx[za0004] {
+					z.Doc2WordsIdx[za0004][za0005], err = dc.ReadInt32()
 					if err != nil {
 						return
 					}
 				}
 			}
 		case "Doc2Idx":
-			var zjfb uint32
-			zjfb, err = dc.ReadMapHeader()
+			var zb0006 uint32
+			zb0006, err = dc.ReadMapHeader()
 			if err != nil {
 				return
 			}
-			if z.Doc2Idx == nil && zjfb > 0 {
-				z.Doc2Idx = make(map[string]int32, zjfb)
+			if z.Doc2Idx == nil && zb0006 > 0 {
+				z.Doc2Idx = make(map[string]int32, zb0006)
 			} else if len(z.Doc2Idx) > 0 {
 				for key, _ := range z.Doc2Idx {
 					delete(z.Doc2Idx, key)
 				}
 			}
-			for zjfb > 0 {
-				zjfb--
-				var zwht string
-				var zhct int32
-				zwht, err = dc.ReadString()
+			for zb0006 > 0 {
+				zb0006--
+				var za0006 string
+				var za0007 int32
+				za0006, err = dc.ReadString()
 				if err != nil {
 					return
 				}
-				zhct, err = dc.ReadInt32()
+				za0007, err = dc.ReadInt32()
 				if err != nil {
 					return
 				}
-				z.Doc2Idx[zwht] = zhct
+				z.Doc2Idx[za0006] = za0007
 			}
 		case "MinReduce":
 			z.MinReduce, err = dc.ReadInt32()
@@ -155,14 +155,14 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Words"
 	err = en.Append(0x87, 0xa5, 0x57, 0x6f, 0x72, 0x64, 0x73)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteArrayHeader(uint32(len(z.Words)))
 	if err != nil {
 		return
 	}
-	for zxvk := range z.Words {
-		err = z.Words[zxvk].EncodeMsg(en)
+	for za0001 := range z.Words {
+		err = z.Words[za0001].EncodeMsg(en)
 		if err != nil {
 			return
 		}
@@ -170,18 +170,18 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Word2Idx"
 	err = en.Append(0xa8, 0x57, 0x6f, 0x72, 0x64, 0x32, 0x49, 0x64, 0x78)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteMapHeader(uint32(len(z.Word2Idx)))
 	if err != nil {
 		return
 	}
-	for zbzg, zbai := range z.Word2Idx {
-		err = en.WriteString(zbzg)
+	for za0002, za0003 := range z.Word2Idx {
+		err = en.WriteString(za0002)
 		if err != nil {
 			return
 		}
-		err = en.WriteInt32(zbai)
+		err = en.WriteInt32(za0003)
 		if err != nil {
 			return
 		}
@@ -189,19 +189,19 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Doc2WordsIdx"
 	err = en.Append(0xac, 0x44, 0x6f, 0x63, 0x32, 0x57, 0x6f, 0x72, 0x64, 0x73, 0x49, 0x64, 0x78)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteArrayHeader(uint32(len(z.Doc2WordsIdx)))
 	if err != nil {
 		return
 	}
-	for zcmr := range z.Doc2WordsIdx {
-		err = en.WriteArrayHeader(uint32(len(z.Doc2WordsIdx[zcmr])))
+	for za0004 := range z.Doc2WordsIdx {
+		err = en.WriteArrayHeader(uint32(len(z.Doc2WordsIdx[za0004])))
 		if err != nil {
 			return
 		}
-		for zajw := range z.Doc2WordsIdx[zcmr] {
-			err = en.WriteInt32(z.Doc2WordsIdx[zcmr][zajw])
+		for za0005 := range z.Doc2WordsIdx[za0004] {
+			err = en.WriteInt32(z.Doc2WordsIdx[za0004][za0005])
 			if err != nil {
 				return
 			}
@@ -210,18 +210,18 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Doc2Idx"
 	err = en.Append(0xa7, 0x44, 0x6f, 0x63, 0x32, 0x49, 0x64, 0x78)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteMapHeader(uint32(len(z.Doc2Idx)))
 	if err != nil {
 		return
 	}
-	for zwht, zhct := range z.Doc2Idx {
-		err = en.WriteString(zwht)
+	for za0006, za0007 := range z.Doc2Idx {
+		err = en.WriteString(za0006)
 		if err != nil {
 			return
 		}
-		err = en.WriteInt32(zhct)
+		err = en.WriteInt32(za0007)
 		if err != nil {
 			return
 		}
@@ -229,7 +229,7 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "MinReduce"
 	err = en.Append(0xa9, 0x4d, 0x69, 0x6e, 0x52, 0x65, 0x64, 0x75, 0x63, 0x65)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt32(z.MinReduce)
 	if err != nil {
@@ -238,7 +238,7 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "MinCnt"
 	err = en.Append(0xa6, 0x4d, 0x69, 0x6e, 0x43, 0x6e, 0x74)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt32(z.MinCnt)
 	if err != nil {
@@ -247,7 +247,7 @@ func (z *TCorpusImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "WordsCnt"
 	err = en.Append(0xa8, 0x57, 0x6f, 0x72, 0x64, 0x73, 0x43, 0x6e, 0x74)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt(z.WordsCnt)
 	if err != nil {
@@ -263,8 +263,8 @@ func (z *TCorpusImpl) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "Words"
 	o = append(o, 0x87, 0xa5, 0x57, 0x6f, 0x72, 0x64, 0x73)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Words)))
-	for zxvk := range z.Words {
-		o, err = z.Words[zxvk].MarshalMsg(o)
+	for za0001 := range z.Words {
+		o, err = z.Words[za0001].MarshalMsg(o)
 		if err != nil {
 			return
 		}
@@ -272,25 +272,25 @@ func (z *TCorpusImpl) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "Word2Idx"
 	o = append(o, 0xa8, 0x57, 0x6f, 0x72, 0x64, 0x32, 0x49, 0x64, 0x78)
 	o = msgp.AppendMapHeader(o, uint32(len(z.Word2Idx)))
-	for zbzg, zbai := range z.Word2Idx {
-		o = msgp.AppendString(o, zbzg)
-		o = msgp.AppendInt32(o, zbai)
+	for za0002, za0003 := range z.Word2Idx {
+		o = msgp.AppendString(o, za0002)
+		o = msgp.AppendInt32(o, za0003)
 	}
 	// string "Doc2WordsIdx"
 	o = append(o, 0xac, 0x44, 0x6f, 0x63, 0x32, 0x57, 0x6f, 0x72, 0x64, 0x73, 0x49, 0x64, 0x78)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Doc2WordsIdx)))
-	for zcmr := range z.Doc2WordsIdx {
-		o = msgp.AppendArrayHeader(o, uint32(len(z.Doc2WordsIdx[zcmr])))
-		for zajw := range z.Doc2WordsIdx[zcmr] {
-			o = msgp.AppendInt32(o, z.Doc2WordsIdx[zcmr][zajw])
+	for za0004 := range z.Doc2WordsIdx {
+		o = msgp.AppendArrayHeader(o, uint32(len(z.Doc2WordsIdx[za0004])))
+		for za0005 := range z.Doc2WordsIdx[za0004] {
+			o = msgp.AppendInt32(o, z.Doc2WordsIdx[za0004][za0005])
 		}
 	}
 	// string "Doc2Idx"
 	o = append(o, 0xa7, 0x44, 0x6f, 0x63, 0x32, 0x49, 0x64, 0x78)
 	o = msgp.AppendMapHeader(o, uint32(len(z.Doc2Idx)))
-	for zwht, zhct := range z.Doc2Idx {
-		o = msgp.AppendString(o, zwht)
-		o = msgp.AppendInt32(o, zhct)
+	for za0006, za0007 := range z.Doc2Idx {
+		o = msgp.AppendString(o, za0006)
+		o = msgp.AppendInt32(o, za0007)
 	}
 	// string "MinReduce"
 	o = append(o, 0xa9, 0x4d, 0x69, 0x6e, 0x52, 0x65, 0x64, 0x75, 0x63, 0x65)
@@ -308,117 +308,117 @@ func (z *TCorpusImpl) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *TCorpusImpl) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zcxo uint32
-	zcxo, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zb0001 uint32
+	zb0001, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zcxo > 0 {
-		zcxo--
+	for zb0001 > 0 {
+		zb0001--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
 		case "Words":
-			var zeff uint32
-			zeff, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zb0002 uint32
+			zb0002, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Words) >= int(zeff) {
-				z.Words = (z.Words)[:zeff]
+			if cap(z.Words) >= int(zb0002) {
+				z.Words = (z.Words)[:zb0002]
 			} else {
-				z.Words = make(TWordItemSlice, zeff)
+				z.Words = make(TWordItemSlice, zb0002)
 			}
-			for zxvk := range z.Words {
-				bts, err = z.Words[zxvk].UnmarshalMsg(bts)
+			for za0001 := range z.Words {
+				bts, err = z.Words[za0001].UnmarshalMsg(bts)
 				if err != nil {
 					return
 				}
 			}
 		case "Word2Idx":
-			var zrsw uint32
-			zrsw, bts, err = msgp.ReadMapHeaderBytes(bts)
+			var zb0003 uint32
+			zb0003, bts, err = msgp.ReadMapHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if z.Word2Idx == nil && zrsw > 0 {
-				z.Word2Idx = make(map[string]int32, zrsw)
+			if z.Word2Idx == nil && zb0003 > 0 {
+				z.Word2Idx = make(map[string]int32, zb0003)
 			} else if len(z.Word2Idx) > 0 {
 				for key, _ := range z.Word2Idx {
 					delete(z.Word2Idx, key)
 				}
 			}
-			for zrsw > 0 {
-				var zbzg string
-				var zbai int32
-				zrsw--
-				zbzg, bts, err = msgp.ReadStringBytes(bts)
+			for zb0003 > 0 {
+				var za0002 string
+				var za0003 int32
+				zb0003--
+				za0002, bts, err = msgp.ReadStringBytes(bts)
 				if err != nil {
 					return
 				}
-				zbai, bts, err = msgp.ReadInt32Bytes(bts)
+				za0003, bts, err = msgp.ReadInt32Bytes(bts)
 				if err != nil {
 					return
 				}
-				z.Word2Idx[zbzg] = zbai
+				z.Word2Idx[za0002] = za0003
 			}
 		case "Doc2WordsIdx":
-			var zxpk uint32
-			zxpk, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zb0004 uint32
+			zb0004, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Doc2WordsIdx) >= int(zxpk) {
-				z.Doc2WordsIdx = (z.Doc2WordsIdx)[:zxpk]
+			if cap(z.Doc2WordsIdx) >= int(zb0004) {
+				z.Doc2WordsIdx = (z.Doc2WordsIdx)[:zb0004]
 			} else {
-				z.Doc2WordsIdx = make([][]int32, zxpk)
+				z.Doc2WordsIdx = make([][]int32, zb0004)
 			}
-			for zcmr := range z.Doc2WordsIdx {
-				var zdnj uint32
-				zdnj, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			for za0004 := range z.Doc2WordsIdx {
+				var zb0005 uint32
+				zb0005, bts, err = msgp.ReadArrayHeaderBytes(bts)
 				if err != nil {
 					return
 				}
-				if cap(z.Doc2WordsIdx[zcmr]) >= int(zdnj) {
-					z.Doc2WordsIdx[zcmr] = (z.Doc2WordsIdx[zcmr])[:zdnj]
+				if cap(z.Doc2WordsIdx[za0004]) >= int(zb0005) {
+					z.Doc2WordsIdx[za0004] = (z.Doc2WordsIdx[za0004])[:zb0005]
 				} else {
-					z.Doc2WordsIdx[zcmr] = make([]int32, zdnj)
+					z.Doc2WordsIdx[za0004] = make([]int32, zb0005)
 				}
-				for zajw := range z.Doc2WordsIdx[zcmr] {
-					z.Doc2WordsIdx[zcmr][zajw], bts, err = msgp.ReadInt32Bytes(bts)
+				for za0005 := range z.Doc2WordsIdx[za0004] {
+					z.Doc2WordsIdx[za0004][za0005], bts, err = msgp.ReadInt32Bytes(bts)
 					if err != nil {
 						return
 					}
 				}
 			}
 		case "Doc2Idx":
-			var zobc uint32
-			zobc, bts, err = msgp.ReadMapHeaderBytes(bts)
+			var zb0006 uint32
+			zb0006, bts, err = msgp.ReadMapHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if z.Doc2Idx == nil && zobc > 0 {
-				z.Doc2Idx = make(map[string]int32, zobc)
+			if z.Doc2Idx == nil && zb0006 > 0 {
+				z.Doc2Idx = make(map[string]int32, zb0006)
 			} else if len(z.Doc2Idx) > 0 {
 				for key, _ := range z.Doc2Idx {
 					delete(z.Doc2Idx, key)
 				}
 			}
-			for zobc > 0 {
-				var zwht string
-				var zhct int32
-				zobc--
-				zwht, bts, err = msgp.ReadStringBytes(bts)
+			for zb0006 > 0 {
+				var za0006 string
+				var za0007 int32
+				zb0006--
+				za0006, bts, err = msgp.ReadStringBytes(bts)
 				if err != nil {
 					return
 				}
-				zhct, bts, err = msgp.ReadInt32Bytes(bts)
+				za0007, bts, err = msgp.ReadInt32Bytes(bts)
 				if err != nil {
 					return
 				}
-				z.Doc2Idx[zwht] = zhct
+				z.Doc2Idx[za0006] = za0007
 			}
 		case "MinReduce":
 			z.MinReduce, bts, err = msgp.ReadInt32Bytes(bts)
@@ -449,25 +449,25 @@ func (z *TCorpusImpl) UnmarshalMsg(bts []byte) (o []byte, err error) {
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *TCorpusImpl) Msgsize() (s int) {
 	s = 1 + 6 + msgp.ArrayHeaderSize
-	for zxvk := range z.Words {
-		s += z.Words[zxvk].Msgsize()
+	for za0001 := range z.Words {
+		s += z.Words[za0001].Msgsize()
 	}
 	s += 9 + msgp.MapHeaderSize
 	if z.Word2Idx != nil {
-		for zbzg, zbai := range z.Word2Idx {
-			_ = zbai
-			s += msgp.StringPrefixSize + len(zbzg) + msgp.Int32Size
+		for za0002, za0003 := range z.Word2Idx {
+			_ = za0003
+			s += msgp.StringPrefixSize + len(za0002) + msgp.Int32Size
 		}
 	}
 	s += 13 + msgp.ArrayHeaderSize
-	for zcmr := range z.Doc2WordsIdx {
-		s += msgp.ArrayHeaderSize + (len(z.Doc2WordsIdx[zcmr]) * (msgp.Int32Size))
+	for za0004 := range z.Doc2WordsIdx {
+		s += msgp.ArrayHeaderSize + (len(z.Doc2WordsIdx[za0004]) * (msgp.Int32Size))
 	}
 	s += 8 + msgp.MapHeaderSize
 	if z.Doc2Idx != nil {
-		for zwht, zhct := range z.Doc2Idx {
-			_ = zhct
-			s += msgp.StringPrefixSize + len(zwht) + msgp.Int32Size
+		for za0006, za0007 := range z.Doc2Idx {
+			_ = za0007
+			s += msgp.StringPrefixSize + len(za0006) + msgp.Int32Size
 		}
 	}
 	s += 10 + msgp.Int32Size + 7 + msgp.Int32Size + 9 + msgp.IntSize
@@ -478,13 +478,13 @@ func (z *TCorpusImpl) Msgsize() (s int) {
 func (z *TWordItem) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zema uint32
-	zema, err = dc.ReadMapHeader()
+	var zb0001 uint32
+	zb0001, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zema > 0 {
-		zema--
+	for zb0001 > 0 {
+		zb0001--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
@@ -496,35 +496,35 @@ func (z *TWordItem) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "Point":
-			var zpez uint32
-			zpez, err = dc.ReadArrayHeader()
+			var zb0002 uint32
+			zb0002, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Point) >= int(zpez) {
-				z.Point = (z.Point)[:zpez]
+			if cap(z.Point) >= int(zb0002) {
+				z.Point = (z.Point)[:zb0002]
 			} else {
-				z.Point = make([]int32, zpez)
+				z.Point = make([]int32, zb0002)
 			}
-			for zsnv := range z.Point {
-				z.Point[zsnv], err = dc.ReadInt32()
+			for za0001 := range z.Point {
+				z.Point[za0001], err = dc.ReadInt32()
 				if err != nil {
 					return
 				}
 			}
 		case "Code":
-			var zqke uint32
-			zqke, err = dc.ReadArrayHeader()
+			var zb0003 uint32
+			zb0003, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Code) >= int(zqke) {
-				z.Code = (z.Code)[:zqke]
+			if cap(z.Code) >= int(zb0003) {
+				z.Code = (z.Code)[:zb0003]
 			} else {
-				z.Code = make([]bool, zqke)
+				z.Code = make([]bool, zb0003)
 			}
-			for zkgt := range z.Code {
-				z.Code[zkgt], err = dc.ReadBool()
+			for za0002 := range z.Code {
+				z.Code[za0002], err = dc.ReadBool()
 				if err != nil {
 					return
 				}
@@ -550,7 +550,7 @@ func (z *TWordItem) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Cnt"
 	err = en.Append(0x84, 0xa3, 0x43, 0x6e, 0x74)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt32(z.Cnt)
 	if err != nil {
@@ -559,14 +559,14 @@ func (z *TWordItem) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Point"
 	err = en.Append(0xa5, 0x50, 0x6f, 0x69, 0x6e, 0x74)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteArrayHeader(uint32(len(z.Point)))
 	if err != nil {
 		return
 	}
-	for zsnv := range z.Point {
-		err = en.WriteInt32(z.Point[zsnv])
+	for za0001 := range z.Point {
+		err = en.WriteInt32(z.Point[za0001])
 		if err != nil {
 			return
 		}
@@ -574,14 +574,14 @@ func (z *TWordItem) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Code"
 	err = en.Append(0xa4, 0x43, 0x6f, 0x64, 0x65)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteArrayHeader(uint32(len(z.Code)))
 	if err != nil {
 		return
 	}
-	for zkgt := range z.Code {
-		err = en.WriteBool(z.Code[zkgt])
+	for za0002 := range z.Code {
+		err = en.WriteBool(z.Code[za0002])
 		if err != nil {
 			return
 		}
@@ -589,7 +589,7 @@ func (z *TWordItem) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Word"
 	err = en.Append(0xa4, 0x57, 0x6f, 0x72, 0x64)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteString(z.Word)
 	if err != nil {
@@ -608,14 +608,14 @@ func (z *TWordItem) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "Point"
 	o = append(o, 0xa5, 0x50, 0x6f, 0x69, 0x6e, 0x74)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Point)))
-	for zsnv := range z.Point {
-		o = msgp.AppendInt32(o, z.Point[zsnv])
+	for za0001 := range z.Point {
+		o = msgp.AppendInt32(o, z.Point[za0001])
 	}
 	// string "Code"
 	o = append(o, 0xa4, 0x43, 0x6f, 0x64, 0x65)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Code)))
-	for zkgt := range z.Code {
-		o = msgp.AppendBool(o, z.Code[zkgt])
+	for za0002 := range z.Code {
+		o = msgp.AppendBool(o, z.Code[za0002])
 	}
 	// string "Word"
 	o = append(o, 0xa4, 0x57, 0x6f, 0x72, 0x64)
@@ -627,13 +627,13 @@ func (z *TWordItem) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *TWordItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zqyh uint32
-	zqyh, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zb0001 uint32
+	zb0001, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zqyh > 0 {
-		zqyh--
+	for zb0001 > 0 {
+		zb0001--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -645,35 +645,35 @@ func (z *TWordItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "Point":
-			var zyzr uint32
-			zyzr, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zb0002 uint32
+			zb0002, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Point) >= int(zyzr) {
-				z.Point = (z.Point)[:zyzr]
+			if cap(z.Point) >= int(zb0002) {
+				z.Point = (z.Point)[:zb0002]
 			} else {
-				z.Point = make([]int32, zyzr)
+				z.Point = make([]int32, zb0002)
 			}
-			for zsnv := range z.Point {
-				z.Point[zsnv], bts, err = msgp.ReadInt32Bytes(bts)
+			for za0001 := range z.Point {
+				z.Point[za0001], bts, err = msgp.ReadInt32Bytes(bts)
 				if err != nil {
 					return
 				}
 			}
 		case "Code":
-			var zywj uint32
-			zywj, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zb0003 uint32
+			zb0003, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Code) >= int(zywj) {
-				z.Code = (z.Code)[:zywj]
+			if cap(z.Code) >= int(zb0003) {
+				z.Code = (z.Code)[:zb0003]
 			} else {
-				z.Code = make([]bool, zywj)
+				z.Code = make([]bool, zb0003)
 			}
-			for zkgt := range z.Code {
-				z.Code[zkgt], bts, err = msgp.ReadBoolBytes(bts)
+			for za0002 := range z.Code {
+				z.Code[za0002], bts, err = msgp.ReadBoolBytes(bts)
 				if err != nil {
 					return
 				}
@@ -702,18 +702,18 @@ func (z *TWordItem) Msgsize() (s int) {
 
 // DecodeMsg implements msgp.Decodable
 func (z *TWordItemSlice) DecodeMsg(dc *msgp.Reader) (err error) {
-	var zrfe uint32
-	zrfe, err = dc.ReadArrayHeader()
+	var zb0002 uint32
+	zb0002, err = dc.ReadArrayHeader()
 	if err != nil {
 		return
 	}
-	if cap((*z)) >= int(zrfe) {
-		(*z) = (*z)[:zrfe]
+	if cap((*z)) >= int(zb0002) {
+		(*z) = (*z)[:zb0002]
 	} else {
-		(*z) = make(TWordItemSlice, zrfe)
+		(*z) = make(TWordItemSlice, zb0002)
 	}
-	for zzpf := range *z {
-		err = (*z)[zzpf].DecodeMsg(dc)
+	for zb0001 := range *z {
+		err = (*z)[zb0001].DecodeMsg(dc)
 		if err != nil {
 			return
 		}
@@ -727,8 +727,8 @@ func (z TWordItemSlice) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	for zgmo := range z {
-		err = z[zgmo].EncodeMsg(en)
+	for zb0003 := range z {
+		err = z[zb0003].EncodeMsg(en)
 		if err != nil {
 			return
 		}
@@ -740,8 +740,8 @@ func (z TWordItemSlice) EncodeMsg(en *msgp.Writer) (err error) {
 func (z TWordItemSlice) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	o = msgp.AppendArrayHeader(o, uint32(len(z)))
-	for zgmo := range z {
-		o, err = z[zgmo].MarshalMsg(o)
+	for zb0003 := range z {
+		o, err = z[zb0003].MarshalMsg(o)
 		if err != nil {
 			return
 		}
@@ -751,18 +751,18 @@ func (z TWordItemSlice) MarshalMsg(b []byte) (o []byte, err error) {
 
 // UnmarshalMsg implements msgp.Unmarshaler
 func (z *TWordItemSlice) UnmarshalMsg(bts []byte) (o []byte, err error) {
-	var zeth uint32
-	zeth, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	var zb0002 uint32
+	zb0002, bts, err = msgp.ReadArrayHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	if cap((*z)) >= int(zeth) {
-		(*z) = (*z)[:zeth]
+	if cap((*z)) >= int(zb0002) {
+		(*z) = (*z)[:zb0002]
 	} else {
-		(*z) = make(TWordItemSlice, zeth)
+		(*z) = make(TWordItemSlice, zb0002)
 	}
-	for ztaf := range *z {
-		bts, err = (*z)[ztaf].UnmarshalMsg(bts)
+	for zb0001 := range *z {
+		bts, err = (*z)[zb0001].UnmarshalMsg(bts)
 		if err != nil {
 			return
 		}
@@ -774,8 +774,8 @@ func (z *TWordItemSlice) UnmarshalMsg(bts []byte) (o []byte, err error) {
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z TWordItemSlice) Msgsize() (s int) {
 	s = msgp.ArrayHeaderSize
-	for zsbz := range z {
-		s += z[zsbz].Msgsize()
+	for zb0003 := range z {
+		s += z[zb0003].Msgsize()
 	}
 	return
 }

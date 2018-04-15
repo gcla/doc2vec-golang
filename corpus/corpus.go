@@ -1,13 +1,11 @@
 package corpus
 
 import (
-	"bufio"
 	_ "errors"
 	"fmt"
 
 	"log"
 	"math"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -227,9 +225,11 @@ func (p *TCorpusImpl) addWord(word string) (err error) {
 	return err
 }
 
-func (p *TCorpusImpl) loadAsWords(docid string, content string) int {
-	items := strings.Split(content, " ")
-	for _, word := range items {
+func (p *TCorpusImpl) loadAsWords(docid string, wordProvider common.IStringProvider) int {
+	count := 0
+	for wordProvider.More() {
+		word := wordProvider.Next()
+		count++
 		word = common.SBC2DBC(word)
 		p.addWord(word)
 		if len(p.Word2Idx) > int(0.7*float32(VOCAB_HASH_SIZE)) {
@@ -237,7 +237,7 @@ func (p *TCorpusImpl) loadAsWords(docid string, content string) int {
 			p.reduceVocabulary()
 		}
 	}
-	return len(items)
+	return count
 }
 
 func (p *TCorpusImpl) Transform(content string) (wordsidx []int32) {
@@ -252,10 +252,10 @@ func (p *TCorpusImpl) Transform(content string) (wordsidx []int32) {
 	return wordsidx
 }
 
-func (p *TCorpusImpl) loadAsDoc(docid string, content string) int {
-	items := strings.Split(content, " ")
-	wordsIdx := make([]int32, 0, len(items))
-	for _, word := range items {
+func (p *TCorpusImpl) loadAsDoc(docid string, words common.IStringProvider) int {
+	wordsIdx := make([]int32, 0) //, len(items))
+	for words.More() {
+		word := words.Next()
 		word = common.SBC2DBC(word)
 		idx, ok := p.Word2Idx[word]
 		if ok {
@@ -278,34 +278,18 @@ func (p *TCorpusImpl) String() string {
 	return fmt.Sprintf("words_cnt:%v,words_map_cnt:%v,docs_cnt:%v\n", words_cnt, words_map_cnt, docs_cnt)
 }
 
-func (p *TCorpusImpl) buildVocabulary(fname string) (err error) {
-	file, err := os.Open(fname)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	scanner.Buffer([]byte{}, bufio.MaxScanTokenSize*100)
+func (p *TCorpusImpl) buildVocabulary(modelProvider common.IModelDataProvider) (err error) {
 	train_words := 0
 	batch := 0
-	for scanner.Scan() {
-		line := scanner.Text()
-		items := strings.Split(line, "\t")
-		if len(items) < 2 {
-			log.Printf("len(items)=%d\n", len(items))
-			continue
-		}
-		docid, content := items[0], items[1]
-		cnt := p.loadAsWords(docid, content)
+	for modelProvider.More() {
+		wordProvider := modelProvider.Next()
+		cnt := p.loadAsWords(wordProvider.Name(), wordProvider.Words())
 		train_words += cnt
 		batch += cnt
 		if batch >= 10000000 {
 			batch = 0
 			log.Printf("train %d words, vocab_size:%d\n", train_words, p.GetVocabCnt())
 		}
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
 	}
 	p.sortVocab()
 	p.createBinaryTree()
@@ -331,46 +315,26 @@ func (p *TCorpusImpl) sortVocab() {
 	p.Words = p.Words[:idx]
 }
 
-func (p *TCorpusImpl) loadDocument(fname string) (err error) {
-	file, err := os.Open(fname)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	scanner.Buffer([]byte{}, bufio.MaxScanTokenSize*100)
+func (p *TCorpusImpl) loadDocument(model common.IModelDataProvider) (err error) {
 	train_docs := 0
-	for scanner.Scan() {
-		line := scanner.Text()
-		items := strings.Split(line, "\t")
-		if len(items) < 2 {
-			log.Printf("len(items)=%d\n", len(items))
-			continue
-		}
-		docid, content := items[0], items[1]
-		docid = strings.Trim(docid, " \n")
-		content = strings.Trim(content, " \n")
-		if len(content) == 0 || len(docid) == 0 {
-			continue
-		}
-		cnt := p.loadAsDoc(docid, content)
+	for model.More() {
+		wordProvider := model.Next()
+		cnt := p.loadAsDoc(wordProvider.Name(), wordProvider.Words())
 		train_docs += cnt
 		if train_docs%100000 == 0 {
 			log.Printf("train %d docs, doc_size:%d\n", train_docs, p.GetDocCnt())
 		}
 	}
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
 	return err
 }
 
-func (p *TCorpusImpl) Build(fname string) (err error) {
-	err = p.buildVocabulary(fname)
+func (p *TCorpusImpl) Build(model common.IModelDataProvider) (err error) {
+	err = p.buildVocabulary(model)
 	if err != nil {
 		return err
 	}
-	return p.loadDocument(fname)
+	model.Reset()
+	return p.loadDocument(model)
 }
 
 func NewCorpus() *TCorpusImpl {

@@ -4,19 +4,21 @@ package doc2vec
 // MSGP CODE GENERATION TOOL (github.com/tinylib/msgp)
 // DO NOT EDIT
 
-import "github.com/tinylib/msgp/msgp"
+import (
+	"github.com/tinylib/msgp/msgp"
+)
 
 // DecodeMsg implements msgp.Decodable
 func (z *SortItem) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zxvk uint32
-	zxvk, err = dc.ReadMapHeader()
+	var zb0001 uint32
+	zb0001, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zxvk > 0 {
-		zxvk--
+	for zb0001 > 0 {
+		zb0001--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
@@ -48,7 +50,7 @@ func (z SortItem) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Idx"
 	err = en.Append(0x82, 0xa3, 0x49, 0x64, 0x78)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt32(z.Idx)
 	if err != nil {
@@ -57,7 +59,7 @@ func (z SortItem) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Dis"
 	err = en.Append(0xa3, 0x44, 0x69, 0x73)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteFloat64(z.Dis)
 	if err != nil {
@@ -83,13 +85,13 @@ func (z SortItem) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *SortItem) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zbzg uint32
-	zbzg, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zb0001 uint32
+	zb0001, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zbzg > 0 {
-		zbzg--
+	for zb0001 > 0 {
+		zb0001--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -126,23 +128,18 @@ func (z SortItem) Msgsize() (s int) {
 func (z *TDoc2VecImpl) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zbai uint32
-	zbai, err = dc.ReadMapHeader()
+	var zb0001 uint32
+	zb0001, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zbai > 0 {
-		zbai--
+	for zb0001 > 0 {
+		zb0001--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "Trainfile":
-			z.Trainfile, err = dc.ReadString()
-			if err != nil {
-				return
-			}
 		case "Dim":
 			z.Dim, err = dc.ReadInt()
 			if err != nil {
@@ -210,20 +207,11 @@ func (z *TDoc2VecImpl) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 12
-	// write "Trainfile"
-	err = en.Append(0x8c, 0xa9, 0x54, 0x72, 0x61, 0x69, 0x6e, 0x66, 0x69, 0x6c, 0x65)
-	if err != nil {
-		return err
-	}
-	err = en.WriteString(z.Trainfile)
+	// map header, size 11
+	// write "Dim"
+	err = en.Append(0x8b, 0xa3, 0x44, 0x69, 0x6d)
 	if err != nil {
 		return
-	}
-	// write "Dim"
-	err = en.Append(0xa3, 0x44, 0x69, 0x6d)
-	if err != nil {
-		return err
 	}
 	err = en.WriteInt(z.Dim)
 	if err != nil {
@@ -232,7 +220,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "UseCbow"
 	err = en.Append(0xa7, 0x55, 0x73, 0x65, 0x43, 0x62, 0x6f, 0x77)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteBool(z.UseCbow)
 	if err != nil {
@@ -241,7 +229,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "WindowSize"
 	err = en.Append(0xaa, 0x57, 0x69, 0x6e, 0x64, 0x6f, 0x77, 0x53, 0x69, 0x7a, 0x65)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt(z.WindowSize)
 	if err != nil {
@@ -250,7 +238,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "UseHS"
 	err = en.Append(0xa5, 0x55, 0x73, 0x65, 0x48, 0x53)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteBool(z.UseHS)
 	if err != nil {
@@ -259,7 +247,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "UseNEG"
 	err = en.Append(0xa6, 0x55, 0x73, 0x65, 0x4e, 0x45, 0x47)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteBool(z.UseNEG)
 	if err != nil {
@@ -268,7 +256,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Negative"
 	err = en.Append(0xa8, 0x4e, 0x65, 0x67, 0x61, 0x74, 0x69, 0x76, 0x65)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt(z.Negative)
 	if err != nil {
@@ -277,7 +265,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "StartAlpha"
 	err = en.Append(0xaa, 0x53, 0x74, 0x61, 0x72, 0x74, 0x41, 0x6c, 0x70, 0x68, 0x61)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteFloat64(z.StartAlpha)
 	if err != nil {
@@ -286,7 +274,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Iters"
 	err = en.Append(0xa5, 0x49, 0x74, 0x65, 0x72, 0x73)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt(z.Iters)
 	if err != nil {
@@ -295,7 +283,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "TrainedWords"
 	err = en.Append(0xac, 0x54, 0x72, 0x61, 0x69, 0x6e, 0x65, 0x64, 0x57, 0x6f, 0x72, 0x64, 0x73)
 	if err != nil {
-		return err
+		return
 	}
 	err = en.WriteInt(z.TrainedWords)
 	if err != nil {
@@ -304,7 +292,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "Corpus"
 	err = en.Append(0xa6, 0x43, 0x6f, 0x72, 0x70, 0x75, 0x73)
 	if err != nil {
-		return err
+		return
 	}
 	err = z.Corpus.EncodeMsg(en)
 	if err != nil {
@@ -313,7 +301,7 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 	// write "NN"
 	err = en.Append(0xa2, 0x4e, 0x4e)
 	if err != nil {
-		return err
+		return
 	}
 	err = z.NN.EncodeMsg(en)
 	if err != nil {
@@ -325,12 +313,9 @@ func (z *TDoc2VecImpl) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *TDoc2VecImpl) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 12
-	// string "Trainfile"
-	o = append(o, 0x8c, 0xa9, 0x54, 0x72, 0x61, 0x69, 0x6e, 0x66, 0x69, 0x6c, 0x65)
-	o = msgp.AppendString(o, z.Trainfile)
+	// map header, size 11
 	// string "Dim"
-	o = append(o, 0xa3, 0x44, 0x69, 0x6d)
+	o = append(o, 0x8b, 0xa3, 0x44, 0x69, 0x6d)
 	o = msgp.AppendInt(o, z.Dim)
 	// string "UseCbow"
 	o = append(o, 0xa7, 0x55, 0x73, 0x65, 0x43, 0x62, 0x6f, 0x77)
@@ -375,23 +360,18 @@ func (z *TDoc2VecImpl) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *TDoc2VecImpl) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zcmr uint32
-	zcmr, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zb0001 uint32
+	zb0001, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zcmr > 0 {
-		zcmr--
+	for zb0001 > 0 {
+		zb0001--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "Trainfile":
-			z.Trainfile, bts, err = msgp.ReadStringBytes(bts)
-			if err != nil {
-				return
-			}
 		case "Dim":
 			z.Dim, bts, err = msgp.ReadIntBytes(bts)
 			if err != nil {
@@ -460,54 +440,54 @@ func (z *TDoc2VecImpl) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *TDoc2VecImpl) Msgsize() (s int) {
-	s = 1 + 10 + msgp.StringPrefixSize + len(z.Trainfile) + 4 + msgp.IntSize + 8 + msgp.BoolSize + 11 + msgp.IntSize + 6 + msgp.BoolSize + 7 + msgp.BoolSize + 9 + msgp.IntSize + 11 + msgp.Float64Size + 6 + msgp.IntSize + 13 + msgp.IntSize + 7 + z.Corpus.Msgsize() + 3 + z.NN.Msgsize()
+	s = 1 + 4 + msgp.IntSize + 8 + msgp.BoolSize + 11 + msgp.IntSize + 6 + msgp.BoolSize + 7 + msgp.BoolSize + 9 + msgp.IntSize + 11 + msgp.Float64Size + 6 + msgp.IntSize + 13 + msgp.IntSize + 7 + z.Corpus.Msgsize() + 3 + z.NN.Msgsize()
 	return
 }
 
 // DecodeMsg implements msgp.Decodable
 func (z *TSortItemSlice) DecodeMsg(dc *msgp.Reader) (err error) {
-	var zhct uint32
-	zhct, err = dc.ReadArrayHeader()
+	var zb0002 uint32
+	zb0002, err = dc.ReadArrayHeader()
 	if err != nil {
 		return
 	}
-	if cap((*z)) >= int(zhct) {
-		(*z) = (*z)[:zhct]
+	if cap((*z)) >= int(zb0002) {
+		(*z) = (*z)[:zb0002]
 	} else {
-		(*z) = make(TSortItemSlice, zhct)
+		(*z) = make(TSortItemSlice, zb0002)
 	}
-	for zwht := range *z {
+	for zb0001 := range *z {
 		if dc.IsNil() {
 			err = dc.ReadNil()
 			if err != nil {
 				return
 			}
-			(*z)[zwht] = nil
+			(*z)[zb0001] = nil
 		} else {
-			if (*z)[zwht] == nil {
-				(*z)[zwht] = new(SortItem)
+			if (*z)[zb0001] == nil {
+				(*z)[zb0001] = new(SortItem)
 			}
 			var field []byte
 			_ = field
-			var zcua uint32
-			zcua, err = dc.ReadMapHeader()
+			var zb0003 uint32
+			zb0003, err = dc.ReadMapHeader()
 			if err != nil {
 				return
 			}
-			for zcua > 0 {
-				zcua--
+			for zb0003 > 0 {
+				zb0003--
 				field, err = dc.ReadMapKeyPtr()
 				if err != nil {
 					return
 				}
 				switch msgp.UnsafeString(field) {
 				case "Idx":
-					(*z)[zwht].Idx, err = dc.ReadInt32()
+					(*z)[zb0001].Idx, err = dc.ReadInt32()
 					if err != nil {
 						return
 					}
 				case "Dis":
-					(*z)[zwht].Dis, err = dc.ReadFloat64()
+					(*z)[zb0001].Dis, err = dc.ReadFloat64()
 					if err != nil {
 						return
 					}
@@ -529,8 +509,8 @@ func (z TSortItemSlice) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	for zxhx := range z {
-		if z[zxhx] == nil {
+	for zb0004 := range z {
+		if z[zb0004] == nil {
 			err = en.WriteNil()
 			if err != nil {
 				return
@@ -540,18 +520,18 @@ func (z TSortItemSlice) EncodeMsg(en *msgp.Writer) (err error) {
 			// write "Idx"
 			err = en.Append(0x82, 0xa3, 0x49, 0x64, 0x78)
 			if err != nil {
-				return err
+				return
 			}
-			err = en.WriteInt32(z[zxhx].Idx)
+			err = en.WriteInt32(z[zb0004].Idx)
 			if err != nil {
 				return
 			}
 			// write "Dis"
 			err = en.Append(0xa3, 0x44, 0x69, 0x73)
 			if err != nil {
-				return err
+				return
 			}
-			err = en.WriteFloat64(z[zxhx].Dis)
+			err = en.WriteFloat64(z[zb0004].Dis)
 			if err != nil {
 				return
 			}
@@ -564,17 +544,17 @@ func (z TSortItemSlice) EncodeMsg(en *msgp.Writer) (err error) {
 func (z TSortItemSlice) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	o = msgp.AppendArrayHeader(o, uint32(len(z)))
-	for zxhx := range z {
-		if z[zxhx] == nil {
+	for zb0004 := range z {
+		if z[zb0004] == nil {
 			o = msgp.AppendNil(o)
 		} else {
 			// map header, size 2
 			// string "Idx"
 			o = append(o, 0x82, 0xa3, 0x49, 0x64, 0x78)
-			o = msgp.AppendInt32(o, z[zxhx].Idx)
+			o = msgp.AppendInt32(o, z[zb0004].Idx)
 			// string "Dis"
 			o = append(o, 0xa3, 0x44, 0x69, 0x73)
-			o = msgp.AppendFloat64(o, z[zxhx].Dis)
+			o = msgp.AppendFloat64(o, z[zb0004].Dis)
 		}
 	}
 	return
@@ -582,48 +562,48 @@ func (z TSortItemSlice) MarshalMsg(b []byte) (o []byte, err error) {
 
 // UnmarshalMsg implements msgp.Unmarshaler
 func (z *TSortItemSlice) UnmarshalMsg(bts []byte) (o []byte, err error) {
-	var zdaf uint32
-	zdaf, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	var zb0002 uint32
+	zb0002, bts, err = msgp.ReadArrayHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	if cap((*z)) >= int(zdaf) {
-		(*z) = (*z)[:zdaf]
+	if cap((*z)) >= int(zb0002) {
+		(*z) = (*z)[:zb0002]
 	} else {
-		(*z) = make(TSortItemSlice, zdaf)
+		(*z) = make(TSortItemSlice, zb0002)
 	}
-	for zlqf := range *z {
+	for zb0001 := range *z {
 		if msgp.IsNil(bts) {
 			bts, err = msgp.ReadNilBytes(bts)
 			if err != nil {
 				return
 			}
-			(*z)[zlqf] = nil
+			(*z)[zb0001] = nil
 		} else {
-			if (*z)[zlqf] == nil {
-				(*z)[zlqf] = new(SortItem)
+			if (*z)[zb0001] == nil {
+				(*z)[zb0001] = new(SortItem)
 			}
 			var field []byte
 			_ = field
-			var zpks uint32
-			zpks, bts, err = msgp.ReadMapHeaderBytes(bts)
+			var zb0003 uint32
+			zb0003, bts, err = msgp.ReadMapHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			for zpks > 0 {
-				zpks--
+			for zb0003 > 0 {
+				zb0003--
 				field, bts, err = msgp.ReadMapKeyZC(bts)
 				if err != nil {
 					return
 				}
 				switch msgp.UnsafeString(field) {
 				case "Idx":
-					(*z)[zlqf].Idx, bts, err = msgp.ReadInt32Bytes(bts)
+					(*z)[zb0001].Idx, bts, err = msgp.ReadInt32Bytes(bts)
 					if err != nil {
 						return
 					}
 				case "Dis":
-					(*z)[zlqf].Dis, bts, err = msgp.ReadFloat64Bytes(bts)
+					(*z)[zb0001].Dis, bts, err = msgp.ReadFloat64Bytes(bts)
 					if err != nil {
 						return
 					}
@@ -643,8 +623,8 @@ func (z *TSortItemSlice) UnmarshalMsg(bts []byte) (o []byte, err error) {
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z TSortItemSlice) Msgsize() (s int) {
 	s = msgp.ArrayHeaderSize
-	for zjfb := range z {
-		if z[zjfb] == nil {
+	for zb0004 := range z {
+		if z[zb0004] == nil {
 			s += msgp.NilSize
 		} else {
 			s += 1 + 4 + msgp.Int32Size + 4 + msgp.Float64Size

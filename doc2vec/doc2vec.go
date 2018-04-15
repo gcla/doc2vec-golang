@@ -46,6 +46,7 @@ func (p *TDoc2VecImpl) initUnigramTable() {
 	train_words_power := 0.0
 	power := 0.75
 	words := p.Corpus.GetAllWords()
+	fmt.Printf("GCLA: corpus words is %v\n", len(words))
 	if NEG_SAMPLING_TABLE_SIZE <= len(words) {
 		log.Fatal("NEG_SAMPLING_TABLE_SIZE < len(words)")
 	}

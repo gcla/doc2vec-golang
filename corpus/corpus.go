@@ -211,6 +211,7 @@ func (p *TCorpusImpl) reduceVocabulary() {
 }
 
 func (p *TCorpusImpl) addWord(word string) (err error) {
+	//fmt.Printf("GCLA: addWord %s\n", word)
 	if len(word) == 0 {
 		return err
 	}
@@ -226,9 +227,11 @@ func (p *TCorpusImpl) addWord(word string) (err error) {
 }
 
 func (p *TCorpusImpl) loadAsWords(docid string, wordProvider common.IStringProvider) int {
+	//fmt.Printf("GCLA: loadaswords\n")
 	count := 0
 	for wordProvider.More() {
 		word := wordProvider.Next()
+		//fmt.Printf("GCLA: got word %s\n", word)
 		count++
 		word = common.SBC2DBC(word)
 		p.addWord(word)
@@ -237,6 +240,7 @@ func (p *TCorpusImpl) loadAsWords(docid string, wordProvider common.IStringProvi
 			p.reduceVocabulary()
 		}
 	}
+	//fmt.Printf("GCLA: done loadaswords count is %d\n", count)
 	return count
 }
 
@@ -279,10 +283,12 @@ func (p *TCorpusImpl) String() string {
 }
 
 func (p *TCorpusImpl) buildVocabulary(modelProvider common.IModelDataProvider) (err error) {
+	//fmt.Printf("GCLA: build vocab\n")
 	train_words := 0
 	batch := 0
 	for modelProvider.More() {
 		wordProvider := modelProvider.Next()
+		//fmt.Printf("GCLA: loading more based on name %s\n", wordProvider.Name())
 		cnt := p.loadAsWords(wordProvider.Name(), wordProvider.Words())
 		train_words += cnt
 		batch += cnt
@@ -291,8 +297,10 @@ func (p *TCorpusImpl) buildVocabulary(modelProvider common.IModelDataProvider) (
 			log.Printf("train %d words, vocab_size:%d\n", train_words, p.GetVocabCnt())
 		}
 	}
+	//fmt.Printf("GCLA: sort vocab\n")
 	p.sortVocab()
 	p.createBinaryTree()
+	//fmt.Printf("GCLA: done sort vocab words is %v\n", p.GetVocabCnt())
 	return err
 }
 

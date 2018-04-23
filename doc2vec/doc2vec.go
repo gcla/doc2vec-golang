@@ -46,7 +46,7 @@ func (p *TDoc2VecImpl) initUnigramTable() {
 	train_words_power := 0.0
 	power := 0.75
 	words := p.Corpus.GetAllWords()
-	fmt.Printf("GCLA: corpus words is %v\n", len(words))
+	//fmt.Printf("GCLA: corpus words is %v\n", len(words))
 	if NEG_SAMPLING_TABLE_SIZE <= len(words) {
 		log.Fatal("NEG_SAMPLING_TABLE_SIZE < len(words)")
 	}
@@ -700,7 +700,7 @@ func (p *TDoc2VecImpl) trainSkipGram() {
 		}
 		wg.Wait()
 	}
-	fmt.Printf("\n%v training end, %v %v\n", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
+	//fmt.Printf("\n%v training end, %v %v\n", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
 }
 
 // P(w|Context(w))
@@ -735,7 +735,7 @@ func (p *TDoc2VecImpl) trainCbow() {
 		}
 		wg.Wait()
 	}
-	fmt.Printf("\n%v training end, %v %v\n", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
+	//fmt.Printf("\n%v training end, %v %v\n", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
 }
 
 func (p *TDoc2VecImpl) GetLeaveOneOutKwds(content string, iters int) {

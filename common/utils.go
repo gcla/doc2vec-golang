@@ -8,6 +8,14 @@ import (
 	"strings"
 )
 
+// IDoc2VecWord is the interface used to construct a word for the Doc2Vec algorithm. Anything
+// meeting this interface can supply data to Doc2Vec
+type IDoc2VecWord interface {
+	Make() string
+}
+
+//======================================================================
+
 type IStringProvider interface {
 	More() bool
 	Next() string
@@ -41,6 +49,34 @@ func (a *ArrayStringProvider) Next() string {
 
 //======================================================================
 
+type ArrayDoc2VecStringProvider struct {
+	Data []IDoc2VecWord
+	Cur  int
+}
+
+func NewDoc2VecArrayStringProvider(data []IDoc2VecWord) *ArrayDoc2VecStringProvider {
+	res := &ArrayDoc2VecStringProvider{
+		Data: data,
+	}
+	var _ IStringProvider = res
+	return res
+}
+
+func (a *ArrayDoc2VecStringProvider) More() bool {
+	return a.Cur < len(a.Data)
+}
+
+func (a *ArrayDoc2VecStringProvider) inc() {
+	a.Cur++
+}
+
+func (a *ArrayDoc2VecStringProvider) Next() string {
+	defer a.inc()
+	return a.Data[a.Cur].Make()
+}
+
+//======================================================================
+
 type IEndpointData interface {
 	Name() string
 	Words() IStringProvider
@@ -55,8 +91,9 @@ type IModelDataProvider interface {
 //======================================================================
 
 type EndpointData struct {
-	TheName  string
-	TheWords *ArrayStringProvider
+	TheName string
+	//TheWords *ArrayStringProvider
+	TheWords IStringProvider
 }
 
 func (e *EndpointData) Name() string {

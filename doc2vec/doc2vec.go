@@ -16,6 +16,7 @@ import (
 	"github.com/gcla/doc2vec-golang/common"
 	"github.com/gcla/doc2vec-golang/corpus"
 	"github.com/gcla/doc2vec-golang/neuralnet"
+	"github.com/sirupsen/logrus"
 	"github.com/tinylib/msgp/msgp"
 )
 
@@ -690,7 +691,7 @@ func (p *TDoc2VecImpl) trainSkipGram() {
 				if last_trained_words > PROGRESS_BAR_THRESHOLD {
 					last_trained_words = 0
 					alpha = p.getTrainAlpha()
-					fmt.Printf("%cSkip-Gram Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", 13, i, alpha,
+					logrus.Infof("%cSkip-Gram Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", 13, i, alpha,
 						float64(p.TrainedWords)/float64(p.Iters*p.Corpus.GetWordsCnt()+1)*100,
 						float64(p.TrainedWords)/float64(time.Since(stime))*100*1000)
 				}
@@ -700,7 +701,7 @@ func (p *TDoc2VecImpl) trainSkipGram() {
 		}
 		wg.Wait()
 	}
-	//fmt.Printf("\n%v training end, %v %v\n", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
+	logrus.Infof("%v skipgram training end, %v trained words %v word count", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
 }
 
 // P(w|Context(w))
@@ -725,7 +726,7 @@ func (p *TDoc2VecImpl) trainCbow() {
 				if last_trained_words > PROGRESS_BAR_THRESHOLD {
 					last_trained_words = 0
 					alpha = p.getTrainAlpha()
-					fmt.Printf("%cCBOW Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", 13, i, alpha,
+					logrus.Infof("%cCBOW Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", 13, i, alpha,
 						float64(p.TrainedWords)/float64(p.Iters*p.Corpus.GetWordsCnt()+1)*100,
 						float64(p.TrainedWords)/float64(time.Since(stime))*100*1000)
 				}
@@ -735,7 +736,7 @@ func (p *TDoc2VecImpl) trainCbow() {
 		}
 		wg.Wait()
 	}
-	//fmt.Printf("\n%v training end, %v %v\n", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
+	logrus.Infof("%v cbow training end, %v trained words %v word count", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
 }
 
 func (p *TDoc2VecImpl) GetLeaveOneOutKwds(content string, iters int) {

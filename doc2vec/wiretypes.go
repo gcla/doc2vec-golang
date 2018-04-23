@@ -1,6 +1,7 @@
 package doc2vec
 
 import (
+	"context"
 	"sync"
 
 	"github.com/gcla/doc2vec-golang/common"
@@ -18,19 +19,19 @@ type SortItem struct {
 type TSortItemSlice []*SortItem
 
 type IDoc2Vec interface {
-	Train(model common.IModelDataProvider)
+	Train(ctx context.Context, model common.IModelDataProvider)
 	GetCorpus() corpus.ICorpus
 	GetNeuralNet() neuralnet.INeuralNet
 	SaveModel(fname string) (err error)
 	LoadModel(fname string) (err error)
 	Word2Words(word string)
 	Word2Docs(word string)
-	Sen2Words(content string, iters int)
-	Sen2Docs(content string, iters int)
+	Sen2Words(ctx context.Context, content string, iters int)
+	Sen2Docs(ctx context.Context, content string, iters int)
 	Doc2Docs(docidx int)
 	Doc2Words(docidx int)
 	GetLikelihood4Doc(context string) (likelihood float64)
-	GetLeaveOneOutKwds(content string, iters int)
+	GetLeaveOneOutKwds(ctx context.Context, content string, iters int)
 	DocSimCal(content1 string, content2 string) (dis float64)
 }
 

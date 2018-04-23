@@ -2,6 +2,7 @@ package doc2vec
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
 	"fmt"
 
@@ -235,7 +236,7 @@ func (p *TDoc2VecImpl) DocSimCal(content1 string, content2 string) (sim float64)
 }
 
 //online fit doc vector
-func (p *TDoc2VecImpl) fitDoc(wordsidx []int32, iters int) (dsyn0 *neuralnet.TVector) {
+func (p *TDoc2VecImpl) fitDoc(ctx context.Context, wordsidx []int32, iters int) (dsyn0 *neuralnet.TVector) {
 	dsyn0 = p.NN.NewDSyn0()
 	trainedwords := 0
 	totalwords := iters*len(wordsidx) + 1
@@ -243,29 +244,29 @@ func (p *TDoc2VecImpl) fitDoc(wordsidx []int32, iters int) (dsyn0 *neuralnet.TVe
 		alpha := p.getAlpha(trainedwords, totalwords)
 		trainedwords += len(wordsidx)
 		if p.UseCbow {
-			p.trainCbow4Document(wordsidx, dsyn0, alpha, true)
+			p.trainCbow4Document(ctx, wordsidx, dsyn0, alpha, true)
 		} else {
-			p.trainSkipGram4Document(wordsidx, dsyn0, alpha, true)
+			p.trainSkipGram4Document(ctx, wordsidx, dsyn0, alpha, true)
 		}
 	}
 	return dsyn0
 }
 
-func (p *TDoc2VecImpl) FitDoc(context string, iters int) (dsyn0 *neuralnet.TVector) {
+func (p *TDoc2VecImpl) FitDoc(ctx context.Context, context string, iters int) (dsyn0 *neuralnet.TVector) {
 	wordsidx := p.Corpus.Transform(context)
-	return p.fitDoc(wordsidx, iters)
+	return p.fitDoc(ctx, wordsidx, iters)
 }
 
-func (p *TDoc2VecImpl) Train(model common.IModelDataProvider) {
+func (p *TDoc2VecImpl) Train(ctx context.Context, model common.IModelDataProvider) {
 	p.Corpus.Build(model)
 	if p.UseNEG {
 		p.initUnigramTable()
 	}
 	p.NN = neuralnet.NewNN(p.Corpus.GetDocCnt(), p.Corpus.GetVocabCnt(), p.Dim, p.UseHS, p.UseNEG)
 	if p.UseCbow {
-		p.trainCbow()
+		p.trainCbow(ctx)
 	} else {
-		p.trainSkipGram()
+		p.trainSkipGram(ctx)
 	}
 }
 
@@ -505,7 +506,12 @@ func (p *TDoc2VecImpl) trainSkipGram4Pair(centralwidx int32, rangevec *neuralnet
 	rangevec.Add(neu1e)
 }
 
-func (p *TDoc2VecImpl) trainSkipGram4Document(wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
+func (p *TDoc2VecImpl) trainSkipGram4Document(ctx context.Context, wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
+	select {
+	case <-ctx.Done():
+		break
+	default:
+	}
 	for spos, widx := range wordsidx {
 		//随机窗口大小
 		// Translate "random window size" ;-)
@@ -532,7 +538,7 @@ func (p *TDoc2VecImpl) trainSkipGram4Document(wordsidx []int32, dsyn0 *neuralnet
 // Translate: "dsyn0 passed by parameters is for convenience infer_doc when passed in directly dvector to train"
 //infer=true的时候不对模型参数进行更新
 
-func (p *TDoc2VecImpl) trainCbow4Document(wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
+func (p *TDoc2VecImpl) trainCbow4Document(ctx context.Context, wordsidx []int32, dsyn0 *neuralnet.TVector, alpha float64, infer bool) {
 	//neu1 := make(neuralnet.TVector, p.Dim, p.Dim)     //X(w)
 	//neu1e := make(neuralnet.TVector, p.Dim, p.Dim)    //e
 	//syn1copy := make(neuralnet.TVector, p.Dim, p.Dim) //为了计算 g*Theta
@@ -672,13 +678,19 @@ func (p *TDoc2VecImpl) trainCbow4Document(wordsidx []int32, dsyn0 *neuralnet.TVe
 	}
 }
 
-func (p *TDoc2VecImpl) trainSkipGram() {
+func (p *TDoc2VecImpl) trainSkipGram(ctx context.Context) {
 	// Skip-Gram  Model
 	tokens := make(chan struct{}, THREAD_NUM)
 	last_trained_words := 0
 	alpha := p.getTrainAlpha()
 	stime := time.Now()
+out:
 	for i := 0; i < p.Iters; i++ {
+		select {
+		case <-ctx.Done():
+			break out
+		default:
+		}
 		wg := new(sync.WaitGroup)
 		for docidx_, wordsidx_ := range p.Corpus.GetAllDocWordsIdx() {
 			docidx, wordsidx := docidx_, wordsidx_
@@ -693,12 +705,12 @@ func (p *TDoc2VecImpl) trainSkipGram() {
 				if last_trained_words > PROGRESS_BAR_THRESHOLD {
 					last_trained_words = 0
 					alpha = p.getTrainAlpha()
-					logrus.Infof("Skip-Gram Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", i, alpha,
+					logrus.Debugf("Skip-Gram Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", i, alpha,
 						float64(p.TrainedWords)/float64(p.Iters*p.Corpus.GetWordsCnt()+1)*100,
 						float64(p.TrainedWords)/float64(time.Since(stime))*100*1000)
 				}
 				dsyn0 := p.NN.GetDSyn0(int32(docidx))
-				p.trainSkipGram4Document(wordsidx, dsyn0, alpha, false)
+				p.trainSkipGram4Document(ctx, wordsidx, dsyn0, alpha, false)
 			}()
 		}
 		wg.Wait()
@@ -707,7 +719,7 @@ func (p *TDoc2VecImpl) trainSkipGram() {
 }
 
 // P(w|Context(w))
-func (p *TDoc2VecImpl) trainCbow() {
+func (p *TDoc2VecImpl) trainCbow(ctx context.Context) {
 	//Continuous Bag-of-Word Model
 	tokens := make(chan struct{}, THREAD_NUM)
 	last_trained_words := 0
@@ -728,12 +740,12 @@ func (p *TDoc2VecImpl) trainCbow() {
 				if last_trained_words > PROGRESS_BAR_THRESHOLD {
 					last_trained_words = 0
 					alpha = p.getTrainAlpha()
-					logrus.Infof("CBOW Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", i, alpha,
+					logrus.Debugf("CBOW Iter:%v Alpha: %f  Progress: %.2f%%  Words/sec: %.2fk  ", i, alpha,
 						float64(p.TrainedWords)/float64(p.Iters*p.Corpus.GetWordsCnt()+1)*100,
 						float64(p.TrainedWords)/float64(time.Since(stime))*100*1000)
 				}
 				dsyn0 := p.NN.GetDSyn0(int32(docidx))
-				p.trainCbow4Document(wordsidx, dsyn0, alpha, false)
+				p.trainCbow4Document(ctx, wordsidx, dsyn0, alpha, false)
 			}()
 		}
 		wg.Wait()
@@ -741,8 +753,8 @@ func (p *TDoc2VecImpl) trainCbow() {
 	logrus.Infof("%v cbow training end, %v trained words %v word count", time.Now(), p.TrainedWords, p.Corpus.GetWordsCnt())
 }
 
-func (p *TDoc2VecImpl) GetLeaveOneOutKwds(content string, iters int) {
-	vec1 := p.FitDoc(content, iters)
+func (p *TDoc2VecImpl) GetLeaveOneOutKwds(ctx context.Context, content string, iters int) {
+	vec1 := p.FitDoc(ctx, content, iters)
 	wordsidx := p.Corpus.Transform(content)
 	dis_vector := make(TSortItemSlice, 0, len(wordsidx))
 	for i, widx := range wordsidx {
@@ -753,7 +765,7 @@ func (p *TDoc2VecImpl) GetLeaveOneOutKwds(content string, iters int) {
 			}
 			loowordsidx = append(loowordsidx, idx)
 		}
-		vec2 := p.fitDoc(loowordsidx, iters)
+		vec2 := p.fitDoc(ctx, loowordsidx, iters)
 		dis := cosineSimilarity(*vec1, *vec2)
 		sortitem := &SortItem{Idx: widx, Dis: dis}
 		dis_vector = append(dis_vector, sortitem)
@@ -817,8 +829,8 @@ func (p *TDoc2VecImpl) Word2Words(word string) {
 	p.findKNNWordsByVector(vector)
 }
 
-func (p *TDoc2VecImpl) Sen2Words(content string, iters int) {
-	vector := p.FitDoc(content, iters)
+func (p *TDoc2VecImpl) Sen2Words(ctx context.Context, content string, iters int) {
+	vector := p.FitDoc(ctx, content, iters)
 	p.findKNNWordsByVector(vector)
 }
 
@@ -852,8 +864,8 @@ func (p *TDoc2VecImpl) Doc2Docs(docidx int) {
 	p.findKNNDocsByVector(vector)
 }
 
-func (p *TDoc2VecImpl) Sen2Docs(content string, iters int) {
-	vector := p.FitDoc(content, iters)
+func (p *TDoc2VecImpl) Sen2Docs(ctx context.Context, content string, iters int) {
+	vector := p.FitDoc(ctx, content, iters)
 	p.findKNNDocsByVector(vector)
 }
 

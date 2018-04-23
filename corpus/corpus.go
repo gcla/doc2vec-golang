@@ -4,13 +4,13 @@ import (
 	_ "errors"
 	"fmt"
 
-	"log"
 	"math"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/gcla/doc2vec-golang/common"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -175,7 +175,7 @@ func (p *TCorpusImpl) GetAllDocWords() (docs [][]*TWordItem) {
 
 func (p *TCorpusImpl) GetWordItemByIdx(i int) (item *TWordItem) {
 	if i < 0 || i >= len(p.Words) {
-		log.Fatal("index out of range")
+		logrus.Fatal("index out of range")
 	}
 	return &p.Words[i]
 }
@@ -236,7 +236,7 @@ func (p *TCorpusImpl) loadAsWords(docid string, wordProvider common.IStringProvi
 		word = common.SBC2DBC(word)
 		p.addWord(word)
 		if len(p.Word2Idx) > int(0.7*float32(VOCAB_HASH_SIZE)) {
-			log.Printf("%d > %d, start reduceVocabulary\n", len(p.Word2Idx), VOCAB_HASH_SIZE)
+			logrus.Printf("%d > %d, start reduceVocabulary\n", len(p.Word2Idx), VOCAB_HASH_SIZE)
 			p.reduceVocabulary()
 		}
 	}
@@ -282,19 +282,19 @@ func (p *TCorpusImpl) String() string {
 	return fmt.Sprintf("words_cnt:%v,words_map_cnt:%v,docs_cnt:%v\n", words_cnt, words_map_cnt, docs_cnt)
 }
 
-func (p *TCorpusImpl) buildVocabulary(modelProvider common.IModelDataProvider) (err error) {
+func (p *TCorpusImpl) buildVocabulary(model common.IModelDataProvider) (err error) {
 	//fmt.Printf("GCLA: build vocab\n")
 	train_words := 0
 	batch := 0
-	for modelProvider.More() {
-		wordProvider := modelProvider.Next()
+	for model.More() {
+		words := model.Next()
 		//fmt.Printf("GCLA: loading more based on name %s\n", wordProvider.Name())
-		cnt := p.loadAsWords(wordProvider.Name(), wordProvider.Words())
+		cnt := p.loadAsWords(words.Name(), words.Words())
 		train_words += cnt
 		batch += cnt
 		if batch >= 10000000 {
 			batch = 0
-			log.Printf("train %d words, vocab_size:%d\n", train_words, p.GetVocabCnt())
+			logrus.Printf("train %d words, vocab_size:%d\n", train_words, p.GetVocabCnt())
 		}
 	}
 	//fmt.Printf("GCLA: sort vocab\n")
@@ -330,7 +330,7 @@ func (p *TCorpusImpl) loadDocument(model common.IModelDataProvider) (err error) 
 		cnt := p.loadAsDoc(wordProvider.Name(), wordProvider.Words())
 		train_docs += cnt
 		if train_docs%100000 == 0 {
-			log.Printf("train %d docs, doc_size:%d\n", train_docs, p.GetDocCnt())
+			logrus.Printf("train %d docs, doc_size:%d\n", train_docs, p.GetDocCnt())
 		}
 	}
 	return err

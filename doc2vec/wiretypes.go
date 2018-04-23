@@ -35,16 +35,17 @@ type IDoc2Vec interface {
 }
 
 type TDoc2VecImpl struct {
-	Dim          int
-	UseCbow      bool //true:Continuous Bag-of-Word Model false:skip-gram
-	WindowSize   int  //cbow model的窗口大小
-	UseHS        bool
-	UseNEG       bool //UseHS / UseNEG两种求解优化算法必须选一个 也可以两种算法都选 详见google word2vec源代码
-	Negative     int  //负采样词的个数
-	StartAlpha   float64
-	Iters        int
-	TrainedWords int
-	Corpus       corpus.ICorpus
-	NN           neuralnet.INeuralNet
-	pool         *sync.Pool
+	Dim              int
+	UseCbow          bool //true:Continuous Bag-of-Word Model false:skip-gram
+	WindowSize       int  //cbow model的窗口大小
+	UseHS            bool
+	UseNEG           bool //UseHS / UseNEG两种求解优化算法必须选一个 也可以两种算法都选 详见google word2vec源代码
+	Negative         int  //负采样词的个数
+	StartAlpha       float64
+	Iters            int
+	TrainedWords     int
+	Corpus           corpus.ICorpus
+	NN               neuralnet.INeuralNet
+	NegSamplingTable []int32
+	pool             *sync.Pool
 }

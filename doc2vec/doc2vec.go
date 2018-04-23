@@ -33,7 +33,8 @@ const (
 )
 
 var gExpTable [EXP_TABLE_SIZE]float64
-var gNegSamplingTable [NEG_SAMPLING_TABLE_SIZE]int32
+
+//var gNegSamplingTable [NEG_SAMPLING_TABLE_SIZE]int32
 var gNextRandom uint64 = 1
 
 func init() {
@@ -57,8 +58,9 @@ func (p *TDoc2VecImpl) initUnigramTable() {
 	var i int32 = 0
 	d1 := math.Pow(float64(words[i].Cnt), power) / train_words_power
 	vocabsize := int32(p.Corpus.GetVocabCnt())
+	p.NegSamplingTable = make([]int32, NEG_SAMPLING_TABLE_SIZE)
 	for a := 0; a < NEG_SAMPLING_TABLE_SIZE; a++ {
-		gNegSamplingTable[a] = i
+		p.NegSamplingTable[a] = i
 		if float64(a)/float64(NEG_SAMPLING_TABLE_SIZE) > d1 {
 			i++
 			d1 += math.Pow(float64(words[i].Cnt), power) / train_words_power
@@ -76,10 +78,10 @@ func GetSigmoidValue(f float64) float64 {
 	}
 	return gExpTable[idx]
 }
-func GetNegativeSamplingWordIdx() int32 {
+func (p *TDoc2VecImpl) GetNegativeSamplingWordIdx() int32 {
 	gNextRandom = gNextRandom*25214903917 + 11
 	idx := int(int(gNextRandom>>16) % NEG_SAMPLING_TABLE_SIZE)
-	target := gNegSamplingTable[idx]
+	target := p.NegSamplingTable[idx]
 	return int32(target)
 }
 
@@ -467,7 +469,7 @@ func (p *TDoc2VecImpl) trainSkipGram4Pair(centralwidx int32, rangevec *neuralnet
 				point = centralwidx
 			} else {
 				label = 0.0
-				point = GetNegativeSamplingWordIdx()
+				point = p.GetNegativeSamplingWordIdx()
 				if point == centralwidx {
 					continue
 				}
@@ -623,7 +625,7 @@ func (p *TDoc2VecImpl) trainCbow4Document(wordsidx []int32, dsyn0 *neuralnet.TVe
 					point = widx
 				} else {
 					label = 0.0
-					point = GetNegativeSamplingWordIdx()
+					point = p.GetNegativeSamplingWordIdx()
 					if point == widx {
 						continue
 					}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 
 	"log"
@@ -48,6 +49,7 @@ func main() {
 		fmt.Println("please select operation type:\n\t0:word2words\n\t1:doc_likelihood\n\t2:leave one out key words\n\t3:sen2words\n\t4:sen2docs\n\t5:word2docs\n\t6:doc2docs\n\t7:doc2words\n\t")
 		text, _ := reader.ReadString('\n')
 		text = strings.Trim(text, "\n")
+		ctx := context.Background()
 		switch text {
 		case "0":
 			fmt.Printf("Enter text:")
@@ -61,15 +63,15 @@ func main() {
 		case "2":
 			fmt.Printf("Enter text:")
 			text, _ = reader.ReadString('\n')
-			d2v.GetLeaveOneOutKwds(get_segmented_query(strings.Trim(text, "\n")), 50)
+			d2v.GetLeaveOneOutKwds(ctx, get_segmented_query(strings.Trim(text, "\n")), 50)
 		case "3":
 			fmt.Printf("Enter text:")
 			text, _ = reader.ReadString('\n')
-			d2v.Sen2Words(get_segmented_query(strings.Trim(text, "\n")), 50)
+			d2v.Sen2Words(ctx, get_segmented_query(strings.Trim(text, "\n")), 50)
 		case "4":
 			fmt.Printf("Enter text:")
 			text, _ = reader.ReadString('\n')
-			d2v.Sen2Docs(get_segmented_query(strings.Trim(text, "\n")), 50)
+			d2v.Sen2Docs(ctx, get_segmented_query(strings.Trim(text, "\n")), 50)
 		case "5":
 			fmt.Printf("Enter text:")
 			text, _ = reader.ReadString('\n')

@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 
+	"context"
+
 	"github.com/gcla/doc2vec-golang/common"
 	"github.com/gcla/doc2vec-golang/doc2vec"
 )
@@ -28,7 +30,8 @@ func main() {
 	}
 	defer file.Close()
 	model := common.NewModelFileDataProvider(file)
-	d2v.Train(model)
+	ctx := context.Background()
+	d2v.Train(ctx, model)
 	err = d2v.SaveModel("2.model")
 	if err != nil {
 		log.Fatal(err)

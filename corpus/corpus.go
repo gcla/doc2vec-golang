@@ -329,9 +329,9 @@ func (p *TCorpusImpl) loadDocument(model common.IModelDataProvider) (err error) 
 		wordProvider := model.Next()
 		cnt := p.loadAsDoc(wordProvider.Name(), wordProvider.Words())
 		train_docs += cnt
-		if train_docs%100000 == 0 {
-			logrus.Printf("train %d docs, doc_size:%d\n", train_docs, p.GetDocCnt())
-		}
+		// if train_docs%100000 == 0 {
+		// 	logrus.Printf("train %d docs, doc_size:%d\n", train_docs, p.GetDocCnt())
+		// }
 	}
 	return err
 }

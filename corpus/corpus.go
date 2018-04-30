@@ -3,10 +3,10 @@ package corpus
 import (
 	_ "errors"
 	"fmt"
+	"strconv"
 
 	"math"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/gcla/doc2vec-golang/common"
@@ -146,6 +146,10 @@ func (p *TCorpusImpl) GetDocCnt() int {
 	return len(p.Doc2Idx)
 }
 
+func (p *TCorpusImpl) GetDocids() []string {
+	return p.Docids
+}
+
 func (p *TCorpusImpl) GetVocabCnt() int {
 	return len(p.GetAllWords())
 }
@@ -271,6 +275,7 @@ func (p *TCorpusImpl) loadAsDoc(docid string, words common.IStringProvider) int 
 	} else {
 		p.Doc2WordsIdx = append(p.Doc2WordsIdx, wordsIdx)
 		p.Doc2Idx[docid] = int32(len(p.Doc2WordsIdx) - 1)
+		p.Docids = append(p.Docids, docid)
 	}
 	return 1
 }
@@ -349,6 +354,7 @@ func NewCorpus() *TCorpusImpl {
 	self := &TCorpusImpl{
 		Word2Idx:  make(map[string]int32),
 		Doc2Idx:   make(map[string]int32),
+		Docids:    make([]string, 0),
 		MinReduce: 1,
 		MinCnt:    1,
 	}

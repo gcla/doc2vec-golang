@@ -27,6 +27,7 @@ type ICorpus interface {
 	GetDocWordsByDocid(id string) (doc []*TWordItem)
 	GetDocWordsByIdx(i int) (doc []*TWordItem)
 	Transform(content string) (wordsidx []int32)
+	GetDocids() []string // all documents as read in
 	msgp.Encodable
 	msgp.Decodable
 	msgp.Marshaler
@@ -39,6 +40,7 @@ type TCorpusImpl struct {
 	Word2Idx     map[string]int32 //word -> words中的下标
 	Doc2WordsIdx [][]int32        //
 	Doc2Idx      map[string]int32 //docid -> Doc2WordsIdx中的下表
+	Docids       []string         // document words, in order, when read in
 	MinReduce    int32
 	MinCnt       int32
 	WordsCnt     int //未排重的词数 Translate: "Unranked words"
